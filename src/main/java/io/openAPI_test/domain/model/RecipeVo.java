@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeDTO {
+public class RecipeVo {
     @JsonProperty("RCP_NM")
     private String menu;  // 메뉴명
 
