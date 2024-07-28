@@ -1,4 +1,4 @@
-package io.openAPI_test.domain.model;
+package io.openAPI_test.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,5 +13,5 @@ public class RecipeApiDetail {
     private Integer totalCount;
 
     @JsonProperty("row")
-    private List<RecipeVo> recipeVoList;
+    private List<Recipe> recipeList;
 }
