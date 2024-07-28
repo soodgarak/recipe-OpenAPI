@@ -1,12 +1,8 @@
 package io.openAPI_test.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.openAPI_test.domain.model.RecipeApi;
+import io.openAPI_test.domain.Recipe;
 import io.openAPI_test.service.RecipeService;
 import lombok.RequiredArgsConstructor;
-
-import java.io.*;
-import java.net.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,12 +32,12 @@ public class RecipeController {
     private String dataType;
 
     @GetMapping("/recipe")
-    public ResponseEntity<RecipeApi> callRecipeApi(@RequestParam(value = "startIdx") Integer startIdx,
-                                                   @RequestParam(value = "endIdx") Integer endIdx) {
+    public ResponseEntity<List<Recipe>> callRecipeApi(@RequestParam(value = "startIdx") Integer startIdx,
+                                                     @RequestParam(value = "endIdx") Integer endIdx) {
         HttpURLConnection urlConnection = null; // JAVA <-> URL 간의 연결에 대한 API를 제공
         InputStream stream = null;
         String recipeWithString = null;
-        RecipeApi recipeApi = null;
+        List<Recipe> recipeList = null;
 
         String urlStr = url +
                 "/" + key +
@@ -50,7 +52,7 @@ public class RecipeController {
             urlConnection = (HttpURLConnection) url.openConnection();
             stream = getNetworkConnection(urlConnection);
             recipeWithString = readStreamToString(stream);
-            recipeApi = convertStringToVo(recipeWithString);
+            recipeList = recipeService.convertStringToRecipe(recipeWithString);
 
             if (stream != null) stream.close();
         } catch(IOException e) {
@@ -61,7 +63,7 @@ public class RecipeController {
             }
         }
 
-        return new ResponseEntity<>(recipeApi, HttpStatus.OK);
+        return new ResponseEntity<>(recipeList, HttpStatus.OK);
     }
 
     /* URLConnection 을 전달받아 연결정보 설정 후 연결, 연결 후 수신한 InputStream 반환 */
@@ -92,19 +94,5 @@ public class RecipeController {
         br.close();
 
         return recipeWithString.toString();
-    }
-
-    // String으로 변환된 데이터를 VO로 변환
-    private RecipeApi convertStringToVo(String recipeWithString) {
-        RecipeApi recipeApi = null;
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            recipeApi = objectMapper.readValue(recipeWithString, RecipeApi.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return recipeApi;
     }
 }
