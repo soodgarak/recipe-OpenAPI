@@ -1,32 +1,46 @@
 package io.openAPI_test.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String RCP_NM;  // 메뉴명
+    private String menu;  // 메뉴명
+
     @Column(nullable = false)
-    private String RCP_PARTS_DTLS;  // 식재료
+    private String ingredient;  // 식재료
 
-    private String RCP_WAY2;    // 조리 방법
+    private String way;    // 조리 방법
 
-    private String RCP_PAT2;    // 요리 종류
-    private List<String> MANUAL;    // 만드는 법
-    private List<String> MANUAL_IMG; // 만드는 법 이미지
-    private String ATT_FILE_NO_MK;   // 요리 대표 이미지
+    private String category;    // 요리 종류
 
-    private Integer INFO_CAR; // 탄수화물
-    private Integer INFO_PRO; // 단백질
-    private Integer INFO_FAT; // 지방
-    private Integer INFO_NA; // 나트륨
-    private Integer INFO_ENG; // 열량
+    @Column(nullable = false)
+    private List<String> manual;    // 만드는 법
+
+    private List<String> manualImg; // 만드는 법 이미지
+
+    private String mainImage;   // 요리 대표 이미지
+
+    private Integer carbohydrate; // 탄수화물
+
+    private Integer protein; // 단백질
+
+    private Integer fat; // 지방
+
+    private Integer natrium; // 나트륨
+
+    private Integer calorie; // 열량
 }
