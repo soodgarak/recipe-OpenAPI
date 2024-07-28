@@ -32,19 +32,19 @@ public class Recipe {
     private String mainImage;   // 요리 대표 이미지
 
     @JsonProperty("INFO_CAR")
-    private Integer carbohydrate; // 탄수화물
+    private Double carbohydrate; // 탄수화물
 
     @JsonProperty("INFO_PRO")
-    private Integer protein; // 단백질
+    private Double protein; // 단백질
 
     @JsonProperty("INFO_FAT")
-    private Integer fat; // 지방
+    private Double fat; // 지방
 
     @JsonProperty("INFO_NA")
-    private Integer natrium; // 나트륨
+    private Double natrium; // 나트륨
 
     @JsonProperty("INFO_ENG")
-    private Integer calorie; // 열량
+    private Double calorie; // 열량
 
     @JsonProperty("RCP_NA_TIP")
     private String tip; // 저감 조리법 TIP
