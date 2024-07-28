@@ -17,5 +17,5 @@ public class CookRcp01 {
     private Integer totalCount;
 
     @JsonProperty("row")
-    private List<RecipeVo> recipeVoList;
+    private List<RecipeDTO> recipeDTOList;
 }
