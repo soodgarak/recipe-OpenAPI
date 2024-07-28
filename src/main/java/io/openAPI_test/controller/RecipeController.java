@@ -43,7 +43,7 @@ public class RecipeController {
                 "/" + dataType +
                 "/" + startIdx.toString() +
                 "/" + endIdx.toString();
-        RecipeApi cookRcp01 = null;
+
         try {
             URL url = new URL(urlStr);
 
