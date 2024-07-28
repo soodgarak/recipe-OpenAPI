@@ -1,7 +1,11 @@
 package io.openAPI_test.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.openAPI_test.domain.model.RecipeApi;
 import io.openAPI_test.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+
+import java.io.*;
 import java.net.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,10 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
 @RestController
@@ -30,11 +30,12 @@ public class RecipeController {
     private String dataType;
 
     @GetMapping("/recipe")
-    public ResponseEntity<String> callRecipeApi(@RequestParam(value = "startIdx") Integer startIdx,
-                                                              @RequestParam(value = "endIdx") Integer endIdx) {
+    public ResponseEntity<RecipeApi> callRecipeApi(@RequestParam(value = "startIdx") Integer startIdx,
+                                                   @RequestParam(value = "endIdx") Integer endIdx) {
         HttpURLConnection urlConnection = null; // JAVA <-> URL 간의 연결에 대한 API를 제공
         InputStream stream = null;
-        String result = null;
+        String recipeWithString = null;
+        RecipeApi recipeApi = null;
 
         String urlStr = url +
                 "/" + key +
@@ -42,13 +43,14 @@ public class RecipeController {
                 "/" + dataType +
                 "/" + startIdx.toString() +
                 "/" + endIdx.toString();
-        System.out.println(urlStr + "\n");
+        RecipeApi cookRcp01 = null;
         try {
             URL url = new URL(urlStr);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             stream = getNetworkConnection(urlConnection);
-            result = readStreamToString(stream);
+            recipeWithString = readStreamToString(stream);
+            recipeApi = convertStringToVo(recipeWithString);
 
             if (stream != null) stream.close();
         } catch(IOException e) {
@@ -59,7 +61,7 @@ public class RecipeController {
             }
         }
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(recipeApi, HttpStatus.OK);
     }
 
     /* URLConnection 을 전달받아 연결정보 설정 후 연결, 연결 후 수신한 InputStream 반환 */
@@ -76,19 +78,33 @@ public class RecipeController {
         return urlConnection.getInputStream();
     }
 
-    /* InputStream을 전달받아 문자열로 변환 후 반환 */
+    // InputStream을 전달 받아 문자열로 변환
     private String readStreamToString(InputStream stream) throws IOException{
-        StringBuilder result = new StringBuilder();
+        StringBuilder recipeWithString = new StringBuilder();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
         String readLine;
         while((readLine = br.readLine()) != null) {
-            result.append(readLine + "\n");
+            recipeWithString.append(readLine + "\n");
         }
 
         br.close();
 
-        return result.toString();
+        return recipeWithString.toString();
+    }
+
+    // String으로 변환된 데이터를 VO로 변환
+    private RecipeApi convertStringToVo(String recipeWithString) {
+        RecipeApi recipeApi = null;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            recipeApi = objectMapper.readValue(recipeWithString, RecipeApi.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return recipeApi;
     }
 }
