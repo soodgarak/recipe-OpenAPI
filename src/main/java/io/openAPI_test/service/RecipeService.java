@@ -55,10 +55,10 @@ public class RecipeService {
         JSONObject recipeApiDetail = jsonObject.getJSONObject("COOKRCP01");
         JSONArray recipeList = recipeApiDetail.getJSONArray("row");
 
-        for (Long recipeId = 1L; recipeId <= recipeList.length(); recipeId++) {
+        for (int i = 1; i <= recipeList.length(); i++) {
             List<Manual> oneManualList = new ArrayList<>();
 
-            JSONObject recipe = recipeList.getJSONObject(recipeId.intValue() - 1);
+            JSONObject recipe = recipeList.getJSONObject(i - 1);
 
             Iterator<String> keys = recipe.keys();
             while(keys.hasNext()) {
