@@ -10,13 +10,13 @@ public class Manual {
     private String manual;    // 만드는 법
     private String manualImgUrl; // 만드는 법 이미지 URL
 
-    private Manual (Recipe recipe, Long manualId, String manual, String manualImgUrl) {
-        this.manualId = new ManualId(recipe.getId(), manualId);
+    private Manual (Long recipeId, Long manualId, String manual, String manualImgUrl) {
+        this.manualId = new ManualId(recipeId, manualId);
         this.manual = manual;
         this.manualImgUrl = manualImgUrl;
     }
 
-    public static Manual of(Recipe recipe, Long manualId, String manual, String manualImgUrl) {
-        return new Manual(recipe, manualId, manual, manualImgUrl);
+    public static Manual of(Long recipeId, Long manualId, String manual, String manualImgUrl) {
+        return new Manual(recipeId, manualId, manual, manualImgUrl);
     }
 }
