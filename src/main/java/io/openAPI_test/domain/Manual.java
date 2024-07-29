@@ -3,9 +3,11 @@ package io.openAPI_test.domain;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Manual {
     @EmbeddedId
     private ManualId manualId;
