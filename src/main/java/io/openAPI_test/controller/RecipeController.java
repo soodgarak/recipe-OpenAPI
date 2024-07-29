@@ -1,5 +1,6 @@
 package io.openAPI_test.controller;
 
+import io.openAPI_test.domain.Manual;
 import io.openAPI_test.domain.Recipe;
 import io.openAPI_test.service.RecipeService;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,41 @@ public class RecipeController {
         }
 
         return new ResponseEntity<>(recipeList, HttpStatus.OK);
+    }
+
+    @GetMapping("/manual")
+    public ResponseEntity<List<Manual>> callManualApi(@RequestParam(value = "startIdx") Integer startIdx,
+                                                      @RequestParam(value = "endIdx") Integer endIdx) {
+        HttpURLConnection urlConnection = null; // JAVA <-> URL 간의 연결에 대한 API를 제공
+        InputStream stream = null;
+        String recipeWithString = null;
+        List<Manual> manualList = null;
+
+        String urlStr = url +
+                "/" + key +
+                "/" + serviceId +
+                "/" + dataType +
+                "/" + startIdx.toString() +
+                "/" + endIdx.toString();
+
+        try {
+            URL url = new URL(urlStr);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            stream = getNetworkConnection(urlConnection);
+            recipeWithString = readStreamToString(stream);
+            manualList = recipeService.convertStringToManual(recipeWithString);
+
+            if (stream != null) stream.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        return new ResponseEntity<>(manualList, HttpStatus.OK);
     }
 
     /* URLConnection 을 전달받아 연결정보 설정 후 연결, 연결 후 수신한 InputStream 반환 */

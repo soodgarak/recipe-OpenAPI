@@ -1,6 +1,7 @@
 package io.openAPI_test.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.openAPI_test.domain.Manual;
 import io.openAPI_test.domain.Recipe;
 import io.openAPI_test.domain.RecipeApi;
 import io.openAPI_test.repository.RecipeRepo;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,12 +20,11 @@ public class RecipeService {
     private final RecipeRepo recipeRepo;
 
     private List<Recipe> insertRecipe(List<Recipe> recipeList) {
-        recipeRepo.saveAll(recipeList);
+         recipeRepo.saveAll(recipeList);
 
         return recipeList;
     }
 
-    //private Recipe findRecipe()
     public List<Recipe> convertStringToRecipe(String recipeWithString) {
         RecipeApi recipeApi = null;
         try {
@@ -37,22 +38,52 @@ public class RecipeService {
         return insertRecipe(recipeApi.getRecipeApiDetail().getRecipeList());
     }
 
-//    private RecipeApi convertStringToManualAndManualImage(String recipeWithString) {
-//
-//        JSONObject jsonObject = new JSONObject(recipeWithString);
-//
-//        JSONObject recipeApiDetail = jsonObject.getJSONObject("COOKRCP01");
-//        JSONArray recipeList = recipeApiDetail.getJSONArray("row");
-//        for (int i = 0; i < recipeList.length(); i++) {
-//            JSONObject recipe = recipeList.getJSONObject(i);
-//
-//            Iterator<String> keys = recipe.keys();
-//            while(keys.hasNext()) {
-//                String key = keys.next();
-//                if (key.startsWith("MANUAL") && key.contains("IMG") && recipe.getString(key) != null) {
-//
-//                }
-//            }
-//        }
-//    }
+    /*
+        < Manual 저장 과정 정리 >
+        1. List<Manual> allManualList, List<Manual> oneManualList 생성
+        2. "MANUAL_IMG"로 시작하고, 내용이 null이 아닐 때
+        3. recipeId = recipeId
+        4. manualId = "MANUAL_IMG" 뒤의 숫자 2개
+        5. manualImgUrl = value
+        6. key = manualImgkey - "_IMG" / manual = value
+        7. 3,4,6 필드로 Entity 생성 -> of() -> oneManualList에 추가
+        8. oneManualList 정렬 (manualId 기반 compareTo())
+        9. 정렬된 oneManualList를 allManualList에 추가
+        10. recipeRepo.saveAll(allManualList);
+    */
+    public List<Manual> convertStringToManual(String recipeWithString) {
+        List<Manual> allManualList = new ArrayList<>();
+
+        JSONObject jsonObject = new JSONObject(recipeWithString);
+        JSONObject recipeApiDetail = jsonObject.getJSONObject("COOKRCP01");
+        JSONArray recipeList = recipeApiDetail.getJSONArray("row");
+
+        for (Long recipeId = 1L; recipeId <= recipeList.length(); recipeId++) {
+            List<Manual> oneManualList = new ArrayList<>();
+
+            JSONObject recipe = recipeList.getJSONObject(recipeId.intValue() - 1);
+
+            Iterator<String> keys = recipe.keys();
+            while(keys.hasNext()) {
+                Long manualId = 0L;
+
+                String key = keys.next();
+                if (key.startsWith("MANUAL_IMG") && recipe.getString(key) != "") {
+                    manualId = Long.parseLong(key.replaceAll("MANUAL_IMG",""));
+
+                    Manual manual = Manual.of(
+                            recipeId,
+                            manualId,
+                            recipe.getString(key.replaceAll("_IMG", "")),
+                            recipe.getString(key));
+
+                    oneManualList.add(manual);
+                }
+            }
+
+            allManualList.addAll(oneManualList);
+        }
+
+        return allManualList;
+    }
 }
