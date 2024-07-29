@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.openAPI_test.domain.Manual;
 import io.openAPI_test.domain.Recipe;
 import io.openAPI_test.domain.RecipeApi;
+import io.openAPI_test.repository.ManualRepo;
 import io.openAPI_test.repository.RecipeRepo;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -16,11 +17,18 @@ import java.util.*;
 @RequiredArgsConstructor
 public class RecipeService {
     private final RecipeRepo recipeRepo;
+    private final ManualRepo manualRepo;
 
     private List<Recipe> insertRecipe(List<Recipe> recipeList) {
-         recipeRepo.saveAll(recipeList);
+        recipeRepo.saveAll(recipeList);
 
         return recipeList;
+    }
+
+    private List<Manual> insertManual(List<Manual> manualList) {
+        manualRepo.saveAll(manualList);
+
+        return manualList;
     }
 
     public List<Recipe> convertStringToRecipe(String recipeWithString) {
@@ -81,6 +89,8 @@ public class RecipeService {
             sortManualList(oneManualList);
             allManualList.addAll(oneManualList);
         }
+
+        insertManual(allManualList);
 
         return allManualList;
     }
