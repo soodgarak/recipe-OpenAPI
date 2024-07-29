@@ -10,9 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -80,10 +78,29 @@ public class RecipeService {
                     oneManualList.add(manual);
                 }
             }
-
+            sortManualList(oneManualList);
             allManualList.addAll(oneManualList);
         }
 
         return allManualList;
+    }
+
+    private List<Manual> sortManualList(List<Manual> manualList) {
+        Collections.sort(manualList, new Comparator<Manual>() {
+                    @Override
+                    public int compare(Manual m1, Manual m2) {
+                        if (m1.getManualId().getManualId() < m2.getManualId().getManualId()) {
+                            return -1;
+                        } else if (m1.getManualId().getManualId() > m2.getManualId().getManualId())
+                        {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
+        );
+
+        return manualList;
     }
 }
