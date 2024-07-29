@@ -48,4 +48,7 @@ public class Recipe {
 
     @JsonProperty("RCP_NA_TIP")
     private String tip; // 저감 조리법 TIP
+
+    @JsonProperty("RCP_SEQ")
+    private Integer serialNum;  // 일련번호
 }
