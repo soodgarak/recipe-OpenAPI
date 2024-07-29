@@ -31,8 +31,8 @@ public class RecipeService {
         return manualList;
     }
 
-    private Long findRecipeIdByMenu(String menu) {
-        return recipeRepo.findByMenu(menu).getId();
+    private Long findRecipeIdBySerialNum(int serialNum) {
+        return recipeRepo.findBySerialNum(serialNum).getId();
     }
 
     public List<Recipe> convertStringToRecipe(String recipeWithString) {
@@ -69,7 +69,7 @@ public class RecipeService {
                     manualId = Long.parseLong(key.replaceAll("MANUAL_IMG",""));
 
                     Manual manual = Manual.of(
-                            findRecipeIdByMenu(recipe.getString("RCP_NM")),
+                            findRecipeIdBySerialNum(recipe.getInt("RCP_SEQ")),
                             manualId,
                             recipe.getString(key.replaceAll("_IMG", "")),
                             recipe.getString(key));
