@@ -31,6 +31,10 @@ public class RecipeService {
         return manualList;
     }
 
+    private Long findRecipeIdByMenu(String menu) {
+        return recipeRepo.findByMenu(menu).getId();
+    }
+
     public List<Recipe> convertStringToRecipe(String recipeWithString) {
         RecipeApi recipeApi = null;
         try {
@@ -65,7 +69,7 @@ public class RecipeService {
                     manualId = Long.parseLong(key.replaceAll("MANUAL_IMG",""));
 
                     Manual manual = Manual.of(
-                            recipeId,
+                            findRecipeIdByMenu(recipe.getString("RCP_NM")),
                             manualId,
                             recipe.getString(key.replaceAll("_IMG", "")),
                             recipe.getString(key));
