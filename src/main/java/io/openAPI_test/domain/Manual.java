@@ -2,8 +2,10 @@ package io.openAPI_test.domain;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Manual {
     @EmbeddedId
     private ManualId manualId;
