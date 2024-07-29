@@ -11,3 +11,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 12345
+
+openApi:
+  key: 9fe3fbd251ba45ebb34e
+  URL: http://openapi.foodsafetykorea.go.kr/api
+  serviceId: COOKRCP01
+  dataType: json
