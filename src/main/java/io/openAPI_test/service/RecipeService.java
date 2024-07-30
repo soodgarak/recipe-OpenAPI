@@ -71,7 +71,7 @@ public class RecipeService {
                     Manual manual = Manual.of(
                             findRecipeIdBySerialNum(recipe.getInt("RCP_SEQ")),
                             manualId,
-                            recipe.getString(key.replaceAll("_IMG", "")),
+                            deleteManualIndex(recipe.getString(key.replaceAll("_IMG", ""))),
                             recipe.getString(key));
 
                     oneManualList.add(manual);
@@ -103,5 +103,10 @@ public class RecipeService {
         );
 
         return manualList;
+    }
+
+
+    private String deleteManualIndex(String manual) {
+        return manual.replaceAll("^\\d+\\.\\s", "");
     }
 }
