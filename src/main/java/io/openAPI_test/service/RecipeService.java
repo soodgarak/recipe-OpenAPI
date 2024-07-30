@@ -61,16 +61,15 @@ public class RecipeService {
             JSONObject recipe = recipeList.getJSONObject(i - 1);
 
             Iterator<String> keys = recipe.keys();
+
+            Long manualId = 1L;
             while(keys.hasNext()) {
-                Long manualId = 0L;
 
                 String key = keys.next();
                 if (key.startsWith("MANUAL_IMG") && recipe.getString(key) != "") {
-                    manualId = Long.parseLong(key.replaceAll("MANUAL_IMG",""));
-
                     Manual manual = Manual.of(
                             findRecipeIdBySerialNum(recipe.getInt("RCP_SEQ")),
-                            manualId,
+                            manualId++,
                             deleteManualIndex(recipe.getString(key.replaceAll("_IMG", ""))),
                             recipe.getString(key));
 
