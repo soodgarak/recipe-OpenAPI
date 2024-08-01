@@ -78,7 +78,6 @@ public class RecipeService {
             sortManualList(oneManualList);
             allManualList.addAll(oneManualList);
         }
-
         insertManual(allManualList);
 
         return allManualList;
